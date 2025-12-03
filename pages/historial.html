@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Hotel Housekeeping - Historial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  >
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- NAVBAR (idéntico al de Camareras) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm small">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center gap-2">
+        <div class="app-logo rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-buildings"></i>
+        </div>
+        <span class="fw-semibold fs-6">Hotel Housekeeping</span>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="online-dot rounded-circle"></span>
+          <span class="badge rounded-pill online-pill">Online</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-semibold">Emilio Alpizar García</span>
+          <span class="text-muted">（Recepción）</span>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary rounded-circle">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TABS (mismos que Camareras, pero activo en Historial) -->
+  <div class="bg-white border-bottom shadow-sm">
+    <div class="container-fluid px-4">
+      <ul class="nav nav-tabs border-0 mt-2 tab-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="habitaciones.html">Habitaciones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="camareras.html">Camareras</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="incidentes.html">Incidentes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page">Historial</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <main class="container-fluid px-4 py-4">
+    <section>
+      <div class="card border-0 shadow-sm users-card">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">Historial de Limpieza (Últimos 50)</h5>
+
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Fecha / Hora</th>
+                  <th>Habitación</th>
+                  <th>Camarera</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo 1 -->
+                <tr>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span class="fw-semibold">30/11/2025</span>
+                      <span class="text-muted small">18:21</span>
+                    </div>
+                  </td>
+                  <td class="fw-bold">3</td>
+                  <td>side</td>
+                  <td>
+                    <span class="badge rounded-pill badge-clean-history">
+                      Limpiada
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- Ejemplo 2 -->
+                <tr>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span class="fw-semibold">30/11/2025</span>
+                      <span class="text-muted small">13:36</span>
+                    </div>
+                  </td>
+                  <td class="fw-bold">1</td>
+                  <td>side</td>
+                  <td>
+                    <span class="badge rounded-pill badge-clean-history">
+                      Limpiada
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- Más filas estáticas o luego dinámicas -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Hotel Housekeeping - Incidentes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  >
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- NAVBAR (igual que en Camareras / Historial) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm small">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center gap-2">
+        <div class="app-logo rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-buildings"></i>
+        </div>
+        <span class="fw-semibold fs-6">Hotel Housekeeping</span>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="online-dot rounded-circle"></span>
+          <span class="badge rounded-pill online-pill">Online</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-semibold">Emilio Alpizar García</span>
+          <span class="text-muted">（Recepción）</span>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary rounded-circle">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TABS -->
+  <div class="bg-white border-bottom shadow-sm">
+    <div class="container-fluid px-4">
+      <ul class="nav nav-tabs border-0 mt-2 tab-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="habitaciones.html">Habitaciones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="camareras.html">Camareras</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page">Incidentes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="historial.html">Historial</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <main class="container-fluid px-4 pb-5 pt-4">
+
+    <!-- Título + filtros -->
+    <section class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <h2 class="mb-0 fw-bold text-gray-800">Gestión de Incidentes</h2>
+
+      <div class="incident-tabs btn-group" role="group" aria-label="Filtros incidentes">
+        <button type="button" class="btn incident-tab-btn active">Pendientes</button>
+        <button type="button" class="btn incident-tab-btn">Resueltos</button>
+        <button type="button" class="btn incident-tab-btn">Todos</button>
+      </div>
+    </section>
+
+    <!-- Estado vacío -->
+    <section class="incident-empty-wrapper">
+      <p class="incident-empty-text">
+        No hay incidentes en esta categoría
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>

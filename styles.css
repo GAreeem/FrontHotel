@@ -1,0 +1,198 @@
+/* --------- Generales --------- */
+
+body {
+  font-size: 0.95rem;
+}
+
+/* Logo cuadrado morado */
+.app-logo {
+  width: 32px;
+  height: 32px;
+  background: #5c3cf0;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+/* Online pill */
+.online-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #22c55e;
+}
+
+.online-pill {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* --------- Tabs superiores --------- */
+
+.tab-nav .nav-link {
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1.25rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.tab-nav .nav-link:hover {
+  color: #111827;
+}
+
+.tab-nav .nav-link.active {
+  color: #111827;
+  border-bottom-color: #4f46e5;
+}
+
+/* --------- Tarjetas de stats --------- */
+
+.stats-card {
+  border-radius: 0.8rem;
+}
+
+.stats-icon {
+  font-size: 1.1rem;
+  color: #9ca3af;
+}
+
+/* --------- Buscador --------- */
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+
+/* --------- Badges de estado --------- */
+
+.badge-status {
+  font-weight: 500;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+}
+
+.badge-available {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.badge-occupied {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-dirty {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge-disabled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Limpia hoy */
+.badge-clean-today {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1px solid #bbf7d0;
+  font-size: 0.75rem;
+}
+
+/* Botones acción tabla */
+.table button.btn-sm {
+  border-radius: 999px;
+  font-size: 0.75rem;
+  padding-inline: 0.9rem;
+}
+
+
+/* Card de usuarios */
+.users-card {
+  border-radius: 0.9rem;
+}
+
+/* Badge estado “Limpiada” */
+.badge-clean-history {
+  background-color: #ecfdf5;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.8rem;
+}
+
+/* Avatar circular del usuario */
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* Badges de rol */
+.role-badge-admin {
+  background-color: #111827;
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.8rem;
+}
+
+.role-badge-housekeeper {
+  background-color: #f4f4f5;
+  color: #111827;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.8rem;
+}
+
+/* Estado activo */
+.state-active {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Botones acciones tabla */
+.table button.btn-sm {
+  border-radius: 999px;
+  font-size: 0.75rem;
+  padding-inline: 0.9rem;
+}
+
+.incident-tabs .incident-tab-btn {
+  border-radius: 999px !important;
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  font-size: 0.9rem;
+  padding: 0.4rem 1.1rem;
+  color: #4b5563;
+}
+
+.incident-tabs .incident-tab-btn.active {
+  background-color: #ffffff;
+  color: #111827;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.incident-empty-wrapper {
+  min-height: 380px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 5rem;
+}
+
+.incident-empty-text {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}

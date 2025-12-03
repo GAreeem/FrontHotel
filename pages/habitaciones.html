@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Hotel Housekeeping - Habitaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  >
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- =================== NAVBAR =================== -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm small">
+    <div class="container-fluid px-4">
+      <!-- Logo + nombre app -->
+      <div class="d-flex align-items-center gap-2">
+        <div class="app-logo rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-buildings"></i>
+        </div>
+        <span class="fw-semibold fs-6">Hotel Housekeeping</span>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <!-- Estado online -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="online-dot rounded-circle"></span>
+          <span class="badge rounded-pill online-pill">Online</span>
+        </div>
+        <!-- Usuario -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-semibold">Emilio Alpizar García</span>
+          <span class="text-muted">（Recepción）</span>
+        </div>
+        <!-- Icono salir -->
+        <button class="btn btn-sm btn-outline-secondary rounded-circle">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =================== NAV TABS =================== -->
+  <div class="bg-white border-bottom shadow-sm">
+    <div class="container-fluid px-4">
+      <ul class="nav nav-tabs border-0 mt-2 tab-nav">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" >Habitaciones</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="camareras.html">Camareras</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="incidentes.html">Incidentes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="historial.html">Historial</a>
+  </li>
+</ul>
+    </div>
+  </div>
+
+  <!-- =================== CONTENIDO PRINCIPAL =================== -->
+  <main class="container-fluid px-4 py-4">
+
+    <!-- ====== Tarjetas de estadísticas ====== -->
+    <section class="mb-4">
+      <div class="row g-3">
+        <!-- Total habitaciones -->
+        <div class="col-6 col-md-3">
+          <div class="card stats-card border-0 shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0 text-muted small">Total Habitaciones</h6>
+                <i class="bi bi-door-open stats-icon"></i>
+              </div>
+              <div class="fs-3 fw-bold">4</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ocupadas -->
+        <div class="col-6 col-md-3">
+          <div class="card stats-card border-0 shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0 text-muted small">Ocupadas</h6>
+                <i class="bi bi-check-circle-fill text-primary stats-icon"></i>
+              </div>
+              <div class="fs-3 fw-bold">2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sucias -->
+        <div class="col-6 col-md-3">
+          <div class="card stats-card border-0 shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0 text-muted small">Sucias</h6>
+                <i class="bi bi-exclamation-triangle-fill text-warning stats-icon"></i>
+              </div>
+              <div class="fs-3 fw-bold">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inhabilitadas -->
+        <div class="col-6 col-md-3">
+          <div class="card stats-card border-0 shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0 text-muted small">Inhabilitadas</h6>
+                <i class="bi bi-x-circle-fill text-danger stats-icon"></i>
+              </div>
+              <div class="fs-3 fw-bold">1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Botones de acciones principales ====== -->
+    <section class="mb-3">
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-dark">
+          Crear Habitación
+        </button>
+      </div>
+    </section>
+
+    <!-- ====== Gestión de habitaciones ====== -->
+    <section>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <!-- Encabezado -->
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+            <h5 class="mb-0 fw-bold">Gestión de Habitaciones</h5>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+              <!-- Buscador -->
+              <div class="search-wrapper position-relative">
+    
+    <input
+        type="text"
+        class="form-control search-input ps-5"
+        placeholder="Buscar habitación..."
+    >
+</div>
+              <!-- Filtro estado -->
+              <select class="form-select w-auto">
+                <option value="all">Todos</option>
+                <option value="available">Disponible</option>
+                <option value="occupied">Ocupada</option>
+                <option value="dirty">Sucia</option>
+                <option value="disabled">Inhabilitada</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tabla de habitaciones -->
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Habitación</th>
+                  <th>Piso</th>
+                  <th>Estado</th>
+                  <th>Limpieza Hoy</th>
+                  <th>Camareras</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Fila 1 -->
+                <tr>
+                  <td class="fw-bold">1</td>
+                  <td>1</td>
+                  <td>
+                    <span class="badge rounded-pill badge-status badge-available">
+                      Disponible
+                    </span>
+                  </td>
+                  <td><span class="text-muted small">-</span></td>
+                  <td>side</td>
+                  <td class="text-end">
+                    <button class="btn btn-outline-secondary btn-sm me-1">
+                      Asignar
+                    </button>
+                    <button class="btn btn-light btn-sm">
+                      Editar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Fila 2 -->
+                <tr>
+                  <td class="fw-bold">2</td>
+                  <td>1</td>
+                  <td>
+                    <span class="badge rounded-pill badge-status badge-disabled">
+                      Inhabilitada
+                    </span>
+                  </td>
+                  <td><span class="text-muted small">-</span></td>
+                  <td>side</td>
+                  <td class="text-end">
+                    <button class="btn btn-outline-secondary btn-sm me-1">
+                      Asignar
+                    </button>
+                    <button class="btn btn-light btn-sm">
+                      Editar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Fila 3 -->
+                <tr>
+                  <td class="fw-bold">3</td>
+                  <td>1</td>
+                  <td>
+                    <span class="badge rounded-pill badge-status badge-occupied">
+                      Ocupada
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill badge-clean-today">
+                      Limpia
+                    </span>
+                  </td>
+                  <td>Emilio</td>
+                  <td class="text-end">
+                    <button class="btn btn-outline-secondary btn-sm me-1">
+                      Asignar
+                    </button>
+                    <button class="btn btn-light btn-sm">
+                      Editar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Puedes seguir agregando más filas aquí -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
