@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Hotel Housekeeping - Mis Habitaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  >
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- NAVBAR / TOPBAR -->
+  <nav class="navbar navbar-light bg-white border-bottom shadow-sm small">
+    <div class="container-fluid px-3 px-md-4">
+      <div class="d-flex align-items-center gap-2">
+        <div class="app-logo rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-door-closed-fill"></i>
+        </div>
+        <span class="fw-semibold fs-6 d-none d-sm-inline">Hotel Housekeeping</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge rounded-pill online-pill d-flex align-items-center gap-1">
+          <i class="bi bi-wifi"></i> <span class="d-none d-sm-inline">Online</span>
+        </span>
+
+        <div class="d-none d-md-flex flex-column text-end">
+          <span class="fw-semibold" style="font-size:.9rem;">side</span>
+          <span class="text-muted" style="font-size:.8rem;">Camarera</span>
+        </div>
+
+        <button 
+            class="btn btn-sm btn-outline-secondary rounded-circle"
+            onclick="logout()"
+            >
+            <i class="bi bi-box-arrow-right"></i>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <main class="container-fluid px-2 px-md-4 py-3 pb-5">
+
+    <!-- ======= Barra de filtros (tabs + chips) ======= -->
+    <section class="mb-4">
+      <div class="card border-0 shadow-sm filter-card">
+        <div class="card-body">
+
+          <!-- Tabs Mis Habitaciones / Todas -->
+          <div class="btn-group w-100 mb-3" role="group" aria-label="Filtro principal">
+  <button type="button" class="btn filter-main-btn active" id="btnMisHabitaciones">
+    Mis Habitaciones
+  </button>
+  <button type="button" class="btn filter-main-btn" id="btnTodasHabitaciones">
+    Todas
+  </button>
+</div>
+
+
+          <!-- Chips de estado (scroll horizontal en móvil) -->
+          <div class="d-flex flex-nowrap gap-2 overflow-auto pb-1 no-scrollbar">
+            <button type="button" class="btn status-chip status-all active">
+              Todas
+            </button>
+            <button type="button" class="btn status-chip status-dirty">
+              Sucias / Ocupadas
+            </button>
+            <button type="button" class="btn status-chip status-occupied">
+              Solo Ocupadas
+            </button>
+            <button type="button" class="btn status-chip status-disabled">
+              Inhabilitadas
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= Lista de habitaciones ======= -->
+    <section class="house-room-list" id="roomList">
+        <!-- Se llena por JS -->
+
+    </section>
+
+  </main>
+  <!-- Modal Reportar Incidente -->
+<div class="modal fade incident-modal" id="incidentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="incidentModalTitle">Reportar Incidente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body pt-3">
+        <!-- Descripción -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Descripción del problema</label>
+          <textarea
+            id="incidentDescription"
+            class="form-control incident-textarea"
+            rows="4"
+            placeholder="Describa el daño o problema encontrado..."
+          ></textarea>
+        </div>
+
+        <!-- Fotos -->
+<div class="mb-3">
+  <label class="form-label fw-semibold small">Fotos (Máx 3)</label>
+
+  <div class="d-flex flex-column gap-2">
+
+    <!-- Botón grande para activar la cámara -->
+    <button
+      type="button"
+      class="photo-upload-box d-flex flex-column align-items-center justify-content-center border-0 bg-transparent"
+      id="incidentUploadBox"
+    >
+      <i class="bi bi-camera mb-1"></i>
+      <span class="small">Usar cámara</span>
+    </button>
+
+    <!-- Contenedor de la cámara -->
+    <div id="incidentCameraContainer" class="mt-2 d-none">
+      <video
+        id="incidentVideo"
+        autoplay
+        playsinline
+        class="w-100 rounded border"
+        style="max-height: 260px; background:#000;"
+      ></video>
+
+      <div class="d-flex justify-content-center gap-2 mt-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          id="incidentSwitchCamera"
+        >
+          Cambiar cámara
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          id="incidentTakePhoto"
+        >
+          Tomar foto
+        </button>
+      </div>
+    </div>
+
+    <!-- Previsualizaciones de fotos capturadas -->
+    <div id="incidentPreviews" class="d-flex gap-2 flex-wrap mt-2"></div>
+  </div>
+</div>
+
+<!-- Canvas oculto para convertir la imagen a base64 -->
+<canvas id="incidentCanvas" class="d-none"></canvas>
+
+
+        <div id="incidentError" class="alert alert-danger d-none small"></div>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-secondary flex-fill me-2" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-danger flex-fill ms-2" id="btnSendIncident">
+          Enviar Reporte
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../js/auth.js"></script>
+  <script>
+    // Solo permite LIMPIEZA; RECEPCION será redirigido
+    checkAuth(['LIMPIEZA']);
+  </script>
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script src="../js/camarera-dashboard.js"></script>
+  
+</body>
+</html>

@@ -17,11 +17,11 @@
   >
 
   <!-- Estilos propios -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="bg-body-tertiary">
 
-  <!-- NAVBAR (igual que en Camareras / Historial) -->
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm small">
     <div class="container-fluid px-4">
       <div class="d-flex align-items-center gap-2">
@@ -40,7 +40,9 @@
           <span class="fw-semibold">Emilio Alpizar García</span>
           <span class="text-muted">（Recepción）</span>
         </div>
-        <button class="btn btn-sm btn-outline-secondary rounded-circle">
+        <button 
+          class="btn btn-sm btn-outline-secondary rounded-circle"
+          onclick="logout()">
           <i class="bi bi-box-arrow-right"></i>
         </button>
       </div>
@@ -75,14 +77,25 @@
       <h2 class="mb-0 fw-bold text-gray-800">Gestión de Incidentes</h2>
 
       <div class="incident-tabs btn-group" role="group" aria-label="Filtros incidentes">
-        <button type="button" class="btn incident-tab-btn active">Pendientes</button>
-        <button type="button" class="btn incident-tab-btn">Resueltos</button>
-        <button type="button" class="btn incident-tab-btn">Todos</button>
+        <button type="button" class="btn incident-tab-btn active" data-filter="open">
+          Pendientes
+        </button>
+        <button type="button" class="btn incident-tab-btn" data-filter="resolved">
+          Resueltos
+        </button>
+        <button type="button" class="btn incident-tab-btn" data-filter="all">
+          Todos
+        </button>
       </div>
     </section>
 
+    <!-- Listado de tarjetas -->
+    <section id="incidentList" class="row g-3 incident-list">
+      <!-- Se llena por JS -->
+    </section>
+
     <!-- Estado vacío -->
-    <section class="incident-empty-wrapper">
+    <section class="incident-empty-wrapper d-none" id="incidentEmptyState">
       <p class="incident-empty-text">
         No hay incidentes en esta categoría
       </p>
@@ -90,9 +103,75 @@
 
   </main>
 
+  <!-- MODAL DETALLE INCIDENTE -->
+  <div class="modal fade" id="incidentDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold d-flex align-items-center justify-content-between w-100">
+            <span id="incidentModalTitle">Incidente - Habitación</span>
+            <span id="incidentModalStatus" class="badge incident-badge-open">Abierto</span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body pt-3">
+          <!-- Descripción -->
+          <div class="mb-4 bg-light rounded-3 p-3">
+            <p id="incidentModalDescription" class="mb-0 text-muted"></p>
+          </div>
+
+          <!-- Fotos -->
+          <div class="mb-4" id="incidentModalPhotosWrapper">
+            <h6 class="text-muted small mb-2">Evidencia Fotográfica</h6>
+            <div id="incidentModalPhotos" class="d-flex gap-2 overflow-auto pb-2">
+              <!-- Thumbs por JS -->
+            </div>
+          </div>
+
+          <!-- Info extra -->
+          <div class="border-top pt-3 small text-muted">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-person"></i>
+              Reportado por:
+              <span class="fw-semibold text-dark" id="incidentModalReporter"></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-calendar3"></i>
+              Fecha:
+              <span class="fw-semibold text-dark" id="incidentModalDate"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cerrar
+          </button>
+          <!-- Si luego quieres resolver desde aquí, usas este botón -->
+          <button type="button" class="btn btn-success" id="btnResolveIncident">
+            <i class="bi bi-check-circle me-2"></i>
+            Resolver e Habilitar Habitación
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/auth.js"></script>
+  <script>
+    // Solo RECEPCION; LIMPIEZA será mandado a camarera-dashboard
+    checkAuth(['RECEPCION']);
+  </script>
+
   <!-- Bootstrap JS -->
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   ></script>
+
+  <!-- JS de esta página -->
+  <script src="../js/incidente.js"></script>
 </body>
 </html>
