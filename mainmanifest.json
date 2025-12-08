@@ -1,7 +1,7 @@
 {
   "name": "Formulario PWA",
-  "short_name": "FormPWA",
-  "start_url": "/pwa-formulario/",
+  "short_name": "HotelPWA",
+  "start_url": "/FrontHotel/",
   "display": "standalone",
   "background_color": "#1A202C",
   "theme_color": "#4A90E2",
@@ -15,6 +15,11 @@
     {
       "src": "images/icons/512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/180.png",
+      "sizes": "180x180",
       "type": "image/png"
     }
   ]

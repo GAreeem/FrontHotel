@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://34.204.177.162:8080';
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById('login-form');
