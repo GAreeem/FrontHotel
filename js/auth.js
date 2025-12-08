@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://34.204.177.162:8080';
+const API_BASE_URL = 'http://34.233.162.137:8080';
 
 // allowedRoles es un array, ej: ['RECEPCION'] o ['LIMPIEZA']
 function checkAuth(allowedRoles) {
