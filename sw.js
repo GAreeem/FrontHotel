@@ -122,7 +122,7 @@ async function syncOfflineActions() {
 
     try {
       if (action.type === 'MARCAR_LIMPIA') {
-        await fetch('https://34.233.162.137:8080/api/limpiezas/marcar-limpia', {
+        await fetch('http://34.233.162.137:8080/api/limpiezas/marcar-limpia', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ async function syncOfflineActions() {
 }
 
 if (action.type === 'INCIDENCIA') {
-  await fetch('https://34.233.162.137:8080/api/incidencias', {
+  await fetch('http://34.233.162.137:8080/api/incidencias', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${action.token}`,
