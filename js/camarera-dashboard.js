@@ -258,28 +258,35 @@ function getEstadoTexto(estado) {
 // =========================
 
 async function marcarHabitacionLimpia(habitacionId) {
+  const body = {
+    habitacionId,
+    camareraId: userId
+  };
+
   try {
-    const body = {
-      habitacionId: habitacionId,
-      camareraId: userId
-    };
+    if (!navigator.onLine) {
+      await saveOfflineAction({
+        type: 'MARCAR_LIMPIA',
+        payload: body,
+        token: localStorage.getItem('token')
+      });
+
+      alert('Sin internet. Acción guardada.');
+      return;
+    }
 
     const resp = await authFetch('/api/limpiezas/marcar-limpia', {
       method: 'POST',
       body: JSON.stringify(body)
     });
 
-    if (!resp.ok) {
-      alert('No se pudo marcar la habitación como limpia.');
-      return;
-    }
-
     await cargarHabitaciones();
   } catch (err) {
     console.error(err);
-    alert('Error al marcar la habitación como limpia.');
+    alert('Error al marcar limpia');
   }
 }
+
 
 // =========================
 // MODAL DE INCIDENCIA
@@ -462,6 +469,18 @@ async function enviarIncidencia() {
   if (incidentPhotosDataUrls.length === 0) {
     errorBox.textContent = 'Debe adjuntar al menos una foto (máx. 3).';
     errorBox.classList.remove('d-none');
+    return;
+  }
+
+  if (!navigator.onLine) {
+    await saveOfflineAction({
+      type: 'INCIDENCIA',
+      payload: body,
+      token: localStorage.getItem('token')
+    });
+
+    incidentModal.hide();
+    alert('Sin internet. Incidencia guardada.');
     return;
   }
 
