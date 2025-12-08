@@ -7,11 +7,25 @@ const DYNAMIC_CACHE = 'dynamic-cache-v1';
 
 const APP_SHELL_ASSETS = [
   './',
-  './hotel-.html',
+  './pages/index.html',
+  './pages/incidentes.html',
+  './pages/historial.html',
+  './pages/habitaciones.html',
+  './pages/camareras.html',
+  './pages/camarera-dashboard.html',
+
+  './js/login.js',
+  './js/incidente.js',
+  './js/historial.js',
+  './js/habitaciones.js',
+  './js/db.js',
+  './js/camareras.js',
+  './js/camarera-dashboard.js',
+  './js/auth.js',
 
   './mainmanifest.json',
   './register.js',
-  './app.js',
+  './styles.css',
   './images/icons/192.png',
   './images/icons/512.png',
   './images/icons/180.png'

@@ -1,5 +1,9 @@
 // /js/camarera-dashboard.js
 
+// =========================
+// ESTADO GLOBAL
+// =========================
+
 let allRooms = [];
 let currentMode = 'mine'; // 'mine' | 'all'
 let currentStatusFilter = 'ALL'; // ALL | DIRTY_OR_OCCUPIED | OCCUPIED | DISABLED
@@ -16,6 +20,142 @@ const userId = Number(localStorage.getItem('userId'));
 // ======== variables de cámara para incidencias ========
 let incidentStream = null;
 let incidentFacingMode = 'environment'; // trasera por defecto
+
+// ======== cola offline (acciones pendientes) ========
+const PENDING_KEY = 'hh_pendientes';
+const ROOMS_KEY   = 'hh_rooms_cache'; // cache de habitaciones para modo offline
+
+function loadPendingQueue() {
+  return JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+}
+
+function savePendingQueue(queue) {
+  localStorage.setItem(PENDING_KEY, JSON.stringify(queue));
+}
+
+function addPendingAction(action) {
+  const queue = loadPendingQueue();
+  queue.push(action);
+  savePendingQueue(queue);
+}
+
+// Marca en UI una habitación como limpia (y opcionalmente "pendiente de sincronizar")
+function marcarEnUIComoLimpia(habitacionId, options = {}) {
+  const card = document.querySelector(`[data-habitacion-id="${habitacionId}"]`);
+  if (!card) return;
+
+  const badge = card.querySelector('.badge-estado');
+  if (badge) {
+    badge.textContent = 'Limpia';
+    badge.classList.remove('room-status-dirty', 'room-status-occupied', 'room-status-disabled');
+    badge.classList.add('room-status-available');
+  }
+
+  const pendingSpan = card.querySelector('.sync-pending');
+  if (pendingSpan) {
+    if (options.pendienteSync) {
+      pendingSpan.classList.remove('d-none');
+      pendingSpan.textContent = 'Pendiente de sincronizar';
+    } else {
+      pendingSpan.classList.add('d-none');
+      pendingSpan.textContent = '';
+    }
+  }
+}
+
+function marcarHabitacionInhabilitadaEnUI(habitacionId, options = {}) {
+  const card = document.querySelector(`[data-habitacion-id="${habitacionId}"]`);
+  if (!card) return;
+
+  const badge = card.querySelector('.badge-estado');
+  if (badge) {
+    badge.textContent = 'Inhabilitada';
+    badge.classList.remove('room-status-available', 'room-status-dirty', 'room-status-occupied');
+    badge.classList.add('room-status-disabled');
+  }
+
+  const pendingSpan = card.querySelector('.sync-pending');
+  if (pendingSpan) {
+    if (options.pendienteSync) {
+      pendingSpan.classList.remove('d-none');
+      pendingSpan.textContent = 'Pendiente de sincronizar';
+    } else {
+      pendingSpan.classList.add('d-none');
+      pendingSpan.textContent = '';
+    }
+  }
+}
+
+
+// Enviar una acción de la cola al backend
+async function enviarAccionAlBackend(action) {
+  // LIMPIEZA
+  if (action.tipo === 'LIMPIEZA') {
+    const resp = await authFetch('/api/limpiezas/marcar-limpia', {
+      method: 'POST',
+      body: JSON.stringify(action.payload)
+    });
+
+    if (!resp.ok) {
+      throw new Error('Error HTTP limpieza: ' + resp.status);
+    }
+  }
+
+  // INCIDENCIA
+  if (action.tipo === 'INCIDENCIA') {
+    const resp = await authFetch('/api/incidencias', {
+      method: 'POST',
+      body: JSON.stringify(action.payload)
+    });
+
+    if (!resp.ok) {
+      throw new Error('Error HTTP incidencia: ' + resp.status);
+    }
+  }
+}
+
+
+// Sincronizar todas las acciones pendientes cuando haya conexión
+async function syncPendingActions() {
+  if (!navigator.onLine) return;
+
+  let queue = loadPendingQueue();
+  if (!queue.length) return;
+
+  console.log('Intentando sincronizar', queue.length, 'acciones pendientes');
+
+  const remaining = [];
+
+  for (const action of queue) {
+    try {
+      await enviarAccionAlBackend(action);
+      console.log('Acción sincronizada', action);
+
+      if (action.tipo === 'LIMPIEZA') {
+        marcarEnUIComoLimpia(action.habitacionId, { pendienteSync: false });
+      }
+    } catch (err) {
+      console.warn('No se pudo sincronizar esta acción, se mantiene en la cola', action, err);
+      remaining.push(action);
+    }
+  }
+
+  savePendingQueue(remaining);
+
+  if (remaining.length === 0) {
+    console.log('Todas las acciones pendientes se sincronizaron 🎉');
+    // Recargar habitaciones desde el back ya con los estados reales
+    try {
+      await cargarHabitaciones();
+    } catch (e) {
+      console.error('Error recargando habitaciones después de sync', e);
+    }
+  }
+}
+
+// =========================
+// DOMContentLoaded
+// =========================
 
 document.addEventListener('DOMContentLoaded', () => {
   const modalElement = document.getElementById('incidentModal');
@@ -74,19 +214,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cargar datos iniciales
   cargarHabitaciones();
+
+  // Intentar sincronizar por si ya hay cosas pendientes
+  syncPendingActions();
 });
 
+// Lanzar sync cuando vuelva la red
+window.addEventListener('online', syncPendingActions);
+
 // =========================
-// CARGAR HABITACIONES
+// CARGAR HABITACIONES (con cache offline)
 // =========================
 
 async function cargarHabitaciones() {
+  // Si NO hay conexión, intento leer del cache local
+  if (!navigator.onLine) {
+    const cached = localStorage.getItem(ROOMS_KEY);
+    if (cached) {
+      allRooms = JSON.parse(cached);
+      renderRooms();
+      console.log('Habitaciones cargadas desde cache local (offline)');
+      return;
+    } else {
+      alert('Sin conexión y sin datos guardados. Conéctate al menos una vez para cargar tus habitaciones.');
+      return;
+    }
+  }
+
+  // Si hay conexión → traigo del backend normalmente (todas las habitaciones)
   try {
     const resp = await authFetch('/api/habitaciones');
-    allRooms = await resp.json();
+    if (!resp.ok) {
+      throw new Error('Error HTTP ' + resp.status);
+    }
+    const data = await resp.json();
+    allRooms = data;
+
+    // Guardo copia en localStorage para modo offline
+    localStorage.setItem(ROOMS_KEY, JSON.stringify(data));
+
     renderRooms();
-  } catch (err) {
-    console.error('Error cargando habitaciones', err);
+  } catch (e) {
+    console.error('Error cargando habitaciones', e);
+    alert('Error al cargar habitaciones');
   }
 }
 
@@ -170,6 +340,7 @@ function renderRooms() {
   rooms.forEach(h => {
     const card = document.createElement('div');
     card.className = 'card room-card mb-3';
+    card.setAttribute('data-habitacion-id', h.id); // importante para marcarEnUIComoLimpia
 
     const badgeClass = getBadgeClass(h.estado);
     const estadoTexto = getEstadoTexto(h.estado);
@@ -180,9 +351,10 @@ function renderRooms() {
           <div>
             <div class="d-flex align-items-center gap-2 mb-1">
               <span class="fw-bold fs-4">${h.numero}</span>
-              <span class="badge ${badgeClass}">${estadoTexto}</span>
+              <span class="badge badge-estado ${badgeClass}">${estadoTexto}</span>
             </div>
             <div class="text-muted small">Piso ${h.piso ?? '-'}</div>
+            <div class="text-muted small sync-pending d-none"></div>
           </div>
         </div>
 
@@ -254,39 +426,45 @@ function getEstadoTexto(estado) {
 
 // =========================
 // MARCAR HABITACIÓN LIMPIA
-// POST /api/limpiezas/marcar-limpia
+// (offline-friendly)
 // =========================
 
 async function marcarHabitacionLimpia(habitacionId) {
-  const body = {
+  const action = {
+    id: (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()),
+    tipo: 'LIMPIEZA',
     habitacionId,
-    camareraId: userId
+    createdAt: Date.now(),
+    payload: {
+      habitacionId: habitacionId,
+      camareraId: userId
+    }
   };
 
+  // Modo optimista en UI
+  marcarEnUIComoLimpia(habitacionId, { pendienteSync: !navigator.onLine });
+
+  // Si NO hay conexión → guardar en cola y salir
+  if (!navigator.onLine) {
+    addPendingAction(action);
+    console.log('Limpieza guardada OFFLINE', action);
+    alert('La habitación se marcará como limpia cuando vuelva la conexión.');
+    return;
+  }
+
+  // Si hay conexión → intentar mandar al backend
   try {
-    if (!navigator.onLine) {
-      await saveOfflineAction({
-        type: 'MARCAR_LIMPIA',
-        payload: body,
-        token: localStorage.getItem('token')
-      });
+    await enviarAccionAlBackend(action);
 
-      alert('Sin internet. Acción guardada.');
-      return;
-    }
-
-    const resp = await authFetch('/api/limpiezas/marcar-limpia', {
-      method: 'POST',
-      body: JSON.stringify(body)
-    });
-
+    // Recargar lista desde el backend (ya limpia)
     await cargarHabitaciones();
   } catch (err) {
-    console.error(err);
-    alert('Error al marcar limpia');
+    console.error('Error al marcar limpia, se guarda en cola offline:', err);
+    addPendingAction(action);
+    marcarEnUIComoLimpia(habitacionId, { pendienteSync: true });
+    alert('No se pudo enviar al servidor. Se guardó offline y se enviará cuando vuelva la conexión.');
   }
 }
-
 
 // =========================
 // MODAL DE INCIDENCIA
@@ -321,13 +499,11 @@ async function openIncidentCamera() {
     return;
   }
 
-  // Si ya hay 3 fotos, no dejar tomar más
   if (incidentPhotosDataUrls.length >= 3) {
     alert('Ya tienes 3 fotos capturadas (máximo permitido).');
     return;
   }
 
-  // Si ya hay un stream activo, no reiniciar
   if (incidentStream) {
     document.getElementById('incidentCameraContainer').classList.remove('d-none');
     return;
@@ -374,10 +550,8 @@ function stopIncidentCamera() {
 async function switchIncidentCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
 
-  // Cambiar modo
   incidentFacingMode = incidentFacingMode === 'environment' ? 'user' : 'environment';
 
-  // Apagar stream actual
   if (incidentStream) {
     incidentStream.getTracks().forEach(t => t.stop());
     incidentStream = null;
@@ -427,11 +601,9 @@ function takeIncidentPhoto() {
 
   ctx.drawImage(video, 0, 0, w, h);
 
-  // JPG base64 (más pequeño que PNG)
   const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
   incidentPhotosDataUrls.push(dataUrl);
 
-  // Crear preview
   const img = document.createElement('img');
   img.src = dataUrl;
   img.style.width = '80px';
@@ -444,7 +616,7 @@ function takeIncidentPhoto() {
 
 // =========================
 // ENVIAR INCIDENCIA
-// POST /api/incidencias
+// (por ahora solo online)
 // =========================
 
 async function enviarIncidencia() {
@@ -472,47 +644,51 @@ async function enviarIncidencia() {
     return;
   }
 
-  if (!navigator.onLine) {
-    await saveOfflineAction({
-      type: 'INCIDENCIA',
-      payload: body,
-      token: localStorage.getItem('token')
-    });
+  // Siempre convertimos las fotos a base64 puro
+  const fotosBase64 = incidentPhotosDataUrls
+    .slice(0, 3)
+    .map(extractBase64FromDataUrl);
 
+  const body = {
+    habitacionId: selectedHabitacionId,
+    camareraId: userId,
+    descripcion: desc,
+    fotos: fotosBase64
+  };
+
+  // Acción offline/online
+  const action = {
+    id: (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()),
+    tipo: 'INCIDENCIA',
+    habitacionId: selectedHabitacionId,
+    createdAt: Date.now(),
+    payload: body
+  };
+
+  // Cambiamos la habitación a INHABILITADA en UI de forma optimista
+  marcarHabitacionInhabilitadaEnUI(selectedHabitacionId, { pendienteSync: !navigator.onLine });
+
+  // Si NO hay conexión → se guarda en cola y se cierra el modal
+  if (!navigator.onLine) {
+    addPendingAction(action);
+    console.log('Incidencia guardada OFFLINE', action);
+    alert('La incidencia se enviará automáticamente cuando vuelva la conexión.');
     incidentModal.hide();
-    alert('Sin internet. Incidencia guardada.');
     return;
   }
 
+  // Si hay conexión → intentamos mandarla al backend
   try {
-    // 👉 aquí convertimos SIEMPRE a base64 puro
-    const fotosBase64 = incidentPhotosDataUrls
-      .slice(0, 3)
-      .map(extractBase64FromDataUrl);
-
-    const body = {
-      habitacionId: selectedHabitacionId,
-      camareraId: userId,
-      descripcion: desc,
-      fotos: fotosBase64
-    };
-
-    const resp = await authFetch('/api/incidencias', {
-      method: 'POST',
-      body: JSON.stringify(body)
-    });
-
-    if (!resp.ok) {
-      throw new Error('Error al crear incidencia');
-    }
+    await enviarAccionAlBackend(action);
 
     incidentModal.hide();
-    await cargarHabitaciones(); // habitación pasa a INHABILITADA
-
+    await cargarHabitaciones(); // recarga estados reales
   } catch (err) {
-    console.error(err);
-    errorBox.textContent = 'No se pudo enviar el reporte de incidencia.';
-    errorBox.classList.remove('d-none');
+    console.error('Error al crear incidencia, se guarda en cola offline:', err);
+    addPendingAction(action);
+    marcarHabitacionInhabilitadaEnUI(selectedHabitacionId, { pendienteSync: true });
+    alert('No se pudo enviar al servidor. Se guardó offline y se enviará cuando vuelva la conexión.');
+    incidentModal.hide();
   }
 }
 
