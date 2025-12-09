@@ -1,4 +1,9 @@
-const API_BASE_URL = 'https://34.233.162.137:8080';
+const API_BASE_URL = 'https://likable-burt-superlaboriously.ngrok-free.dev';
+
+// Si usamos ngrok, agregamos el header especial
+const NGROK_EXTRA_HEADERS = API_BASE_URL.includes('ngrok')
+  ? { 'ngrok-skip-browser-warning': 'true' }
+  : {};
 
 // allowedRoles es un array, ej: ['RECEPCION'] o ['LIMPIEZA']
 function checkAuth(allowedRoles) {
@@ -7,7 +12,7 @@ function checkAuth(allowedRoles) {
 
   // Si no hay token → al login
   if (!token) {
-    window.location.href = 'index.html';
+    window.location.href = '/index.html';
     return;
   }
 
@@ -15,11 +20,11 @@ function checkAuth(allowedRoles) {
   if (!allowedRoles.includes(rol)) {
     // Redirigimos a SU página correcta
     if (rol === 'RECEPCION') {
-      window.location.href = 'habitaciones.html';
+      window.location.href = 'pages/habitaciones.html';
     } else if (rol === 'LIMPIEZA') {
-      window.location.href = 'camarera-dashboard.html';
+      window.location.href = 'pages/camarera-dashboard.html';
     } else {
-      window.location.href = 'index.html';
+      window.location.href = '/index.html';
     }
   }
 }
@@ -31,6 +36,7 @@ async function authFetch(url, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
+    ...NGROK_EXTRA_HEADERS,
     'Authorization': `Bearer ${token}`
   };
 
@@ -49,6 +55,6 @@ async function authFetch(url, options = {}) {
 
 function logout() {
   localStorage.clear();   // elimina token, rol, username, nombre, userId, etc.
-  window.location.href = 'index.html';
+  window.location.href = '/index.html';
 }
 

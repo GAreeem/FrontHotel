@@ -1,13 +1,9 @@
-<script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
-importScripts('https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js');
-
-const db = new PouchDB('offline-actions');
 const STATIC_CACHE = 'app-shell-v1';
 const DYNAMIC_CACHE = 'dynamic-cache-v1';
 
 const APP_SHELL_ASSETS = [
   './',
-  './pages/index.html',
+  './index.html',
   './pages/incidentes.html',
   './pages/historial.html',
   './pages/habitaciones.html',
@@ -74,7 +70,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // CDN dinámico
+  // CDN / API dinámico
   if (DYNAMIC_ASSET_URLS.some((u) => request.url.startsWith(u))) {
     event.respondWith(
       caches.match(request).then((cached) => {
@@ -108,61 +104,9 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-offline-actions') {
-    event.waitUntil(syncOfflineActions());
-  }
-});
-
-async function syncOfflineActions() {
-  const docs = await db.allDocs({ include_docs: true });
-
-  for (const row of docs.rows) {
-    const action = row.doc;
-
-    try {
-      if (action.type === 'MARCAR_LIMPIA') {
-        await fetch('https://34.233.162.137:8080/api/limpiezas/marcar-limpia', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${action.token}`
-          },
-          body: JSON.stringify(action.payload)
-        });
-        console.log('[SW] sincronizando acciones offline...');
-        console.log('[SW] enviando acción:', action);
-      }
-      console.log('[SW] sincronizando acciones offline...');
-      console.log('[SW] enviando acción:', action);
-
-
-      // ✅ borrar si se envió bien
-      await db.remove(action._id, action._rev);
-      console.log('[SW] sincronizando acciones offline...');
-      console.log('[SW] enviando acción:', action);
-
-
-    } catch (err) {
-      console.log('Error sync, se reintentará', err);
-    }
-    console.log('[SW] sincronizando acciones offline...');
-    console.log('[SW] enviando acción:', action);
-
-
-  }
-}
-
-if (action.type === 'INCIDENCIA') {
-  await fetch('http://34.233.162.137:8080/api/incidencias', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${action.token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(action.payload)
-  });
-  console.log('[SW] sincronizando acciones offline...');
-  console.log('[SW] enviando acción:', action);
-
-}
+// Por ahora SIN sync offline, lo quitamos para evitar errores
+// self.addEventListener('sync', (event) => {
+//   if (event.tag === 'sync-offline-actions') {
+//     event.waitUntil(syncOfflineActions());
+//   }
+// });

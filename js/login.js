@@ -1,4 +1,8 @@
-const API_BASE_URL = 'https://34.233.162.137:8080';
+const API_BASE_URL = 'https://likable-burt-superlaboriously.ngrok-free.dev';
+
+const NGROK_EXTRA_HEADERS = API_BASE_URL.includes('ngrok')
+  ? { 'ngrok-skip-browser-warning': 'true' }
+  : {};
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById('login-form');
@@ -16,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+          ...NGROK_EXTRA_HEADERS },
         body: JSON.stringify({ username, password })
       });
 
@@ -36,13 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem('userId', data.id);
 
       // 🔹 Redirecciones según rol:
-      if (data.rol === 'LIMPIEZA') {
-        window.location.href = 'camarera-dashboard.html';
-      } else if (data.rol === 'RECEPCION') {
-        window.location.href = 'habitaciones.html';
-      } else {
-        window.location.href = 'index.html';
-      }
+     if (data.rol === 'LIMPIEZA') {
+  window.location.href = 'pages/camarera-dashboard.html';
+} else if (data.rol === 'RECEPCION') {
+  window.location.href = 'pages/habitaciones.html';
+} else {
+  window.location.href = '/index.html';
+}
 
     } catch (error) {
       console.error(error);

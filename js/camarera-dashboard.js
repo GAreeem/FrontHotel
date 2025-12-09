@@ -350,7 +350,7 @@ function renderRooms() {
         <div class="d-flex justify-content-between align-items-start">
           <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="fw-bold fs-4">${h.numero}</span>
+              <span class="fw-bold fs-4">Habitación: ${h.numero}</span>
               <span class="badge badge-estado ${badgeClass}">${estadoTexto}</span>
             </div>
             <div class="text-muted small">Piso ${h.piso ?? '-'}</div>
